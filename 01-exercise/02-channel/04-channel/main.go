@@ -2,7 +2,7 @@ package main
 
 import "fmt"
 
-// TODO: Implement relaying of message with Channel Direction
+// Implement relaying of message with Channel Direction
 
 func genMsg(ch chan<- string) {
 	// send message on ch1

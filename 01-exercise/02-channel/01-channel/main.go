@@ -8,7 +8,7 @@ func main() {
 		c := a + b
 		ch <- c
 	}(1, 2)
-	// TODO: get the value computed from goroutine
+	// get the value computed from goroutine
 	c := <-ch
 	fmt.Printf("computed value %v\n", c)
 }

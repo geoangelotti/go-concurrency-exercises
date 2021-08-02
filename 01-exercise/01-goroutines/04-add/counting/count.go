@@ -28,7 +28,7 @@ func Add(numbers []int) int64 {
 	return sum
 }
 
-//TODO: complete the concurrent version of add function.
+//complete the concurrent version of add function.
 
 // AddConcurrent - concurrent code to add numbers
 func AddConcurrent(numbers []int) int64 {
