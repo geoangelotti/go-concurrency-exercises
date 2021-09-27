@@ -2,15 +2,22 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"os"
+	"sync"
 	"time"
 )
 
-//TODO: create pool of bytes.Buffers which can be reused.
+var bufferPool = sync.Pool{
+	New: func() interface{} {
+		fmt.Println("Allocating new buffer")
+		return new(bytes.Buffer)
+	},
+}
 
 func log(w io.Writer, val string) {
-	var b bytes.Buffer
+	var b = bufferPool.Get().(*bytes.Buffer)
 
 	b.WriteString(time.Now().Format("15:04:05"))
 	b.WriteString(" : ")
@@ -18,6 +25,8 @@ func log(w io.Writer, val string) {
 	b.WriteString("\n")
 
 	w.Write(b.Bytes())
+
+	bufferPool.Put(b)
 }
 
 func main() {
