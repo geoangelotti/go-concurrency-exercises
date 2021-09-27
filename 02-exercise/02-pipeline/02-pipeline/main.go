@@ -2,6 +2,11 @@
 
 package main
 
+import (
+	"fmt"
+	"sync"
+)
+
 func generator(nums ...int) <-chan int {
 	out := make(chan int)
 
@@ -28,13 +33,32 @@ func square(in <-chan int) <-chan int {
 func merge(cs ...<-chan int) <-chan int {
 	// Implement fan-in
 	// merge a list of channels to a single channel
+	out := make(chan int)
+	var wg sync.WaitGroup
+
+	wg.Add(len(cs))
+	for _, c := range cs {
+		go func(ch <-chan int) {
+			for n := range ch {
+				out <- n
+			}
+			wg.Done()
+		}(c)
+	}
+	go func() {
+		wg.Wait()
+		close(out)
+	}()
+	return out
 }
 
 func main() {
-	in := generator(2, 3)
+	in := generator(2, 3, 10, 99/3)
 
-	// TODO: fan out square stage to run two instances.
+	ch1 := square(square(in))
+	ch2 := square(square(square(in)))
 
-	// TODO: fan in the results of square stages.
-
+	for n := range merge(ch1, ch2) {
+		fmt.Println(n)
+	}
 }
