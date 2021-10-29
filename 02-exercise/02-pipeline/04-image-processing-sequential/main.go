@@ -21,7 +21,7 @@ func main() {
 	}
 	start := time.Now()
 
-	err := walkFiles(os.Args[1])
+	err := setupPipeline(os.Args[1])
 
 	if err != nil {
 		log.Fatal(err)
@@ -29,11 +29,18 @@ func main() {
 	fmt.Printf("Time taken: %s\n", time.Since(start))
 }
 
+func setupPipeline(root string) (err error) {
+	done := make(chan struct{})
+	defer close(done)
+	walkFiles(done, root)
+	return err
+}
+
 // walfiles - take diretory path as input
 // does the file walk
 // generates thumbnail images
 // saves the image to thumbnail directory.
-func walkFiles(root string) error {
+func walkFiles(done <-chan struct{}, root string) (<-chan string, <-chan error) {
 	err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
 
 		// filter out error
