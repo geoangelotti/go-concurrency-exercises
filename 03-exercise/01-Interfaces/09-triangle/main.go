@@ -51,6 +51,21 @@ func angle(a, b, c float64) float64 {
 // Print area of each.
 // print angles of the triangle
 
+type shape interface {
+	area() float64
+}
+
 func main() {
+
+	shapes := []shape{circle{2}, triangle{3, 4, 5}, rectangle{2, 4}}
+	for _, shape := range shapes {
+		t, ok := shape.(triangle)
+		if ok {
+			fmt.Printf("The area of %s is %f, angles %v\n", t, t.area(), t.angles())
+		} else {
+			fmt.Printf("The area of %s is %f\n", shape, shape.area())
+		}
+
+	}
 
 }

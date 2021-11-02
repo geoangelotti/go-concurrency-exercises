@@ -8,6 +8,10 @@ import (
 	"time"
 )
 
+func (t *time.Duration) Write(p []byte) (n int, err error) {
+	return 0, nil
+}
+
 func main() {
 	var w io.Writer
 	w = os.Stdout
